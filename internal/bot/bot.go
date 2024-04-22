@@ -12,7 +12,7 @@ import (
 
 var (
     appID = "1231817741669896213"
-    guildID = "785618905665896478"
+    guildID = ""
 )
 
 func Run(BotToken string, OpenAiKey string) {
