@@ -53,5 +53,6 @@ func GetImageUrl(prompt string, openaikey string) (string, error) {
     err = json.Unmarshal(body, bodyStruct)
     if err != nil { fmt.Println("Image"); return "", err }
 
+    if len(bodyStruct.Data) == 0 { return "rejected", nil }
     return bodyStruct.Data[0].Url, nil
 }

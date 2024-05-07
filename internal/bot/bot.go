@@ -39,11 +39,12 @@ func Run(BotToken string, OpenAiKey string) {
         s *discordgo.Session,
         i * discordgo.InteractionCreate,
     ) {
+        var erro bool;
         if i.Type == discordgo.InteractionApplicationCommand {
             data := i.ApplicationCommandData()
             switch data.Name {
             case "generate-image":
-                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func"); return }
+                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func"); return; }
 
                 err = s.InteractionRespond(
                     i.Interaction,
@@ -63,7 +64,7 @@ func Run(BotToken string, OpenAiKey string) {
                         prompt = v.StringValue()
                     }
                 }
-                if prompt == "" { fmt.Println("Within func"); return }
+                if prompt == "" { fmt.Println("Within func"); return; }
 
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
@@ -71,8 +72,9 @@ func Run(BotToken string, OpenAiKey string) {
                 url, err := imagegeneration.GetImageUrl(prompt, OpenAiKey)
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
-                    fmt.Println("Within func"); return
+                    fmt.Println("Within func"); return;
                 }
+                if url == "rejected" { erro = true; }
 
                 msg := &discordgo.MessageSend{
                     Content: url,
@@ -81,9 +83,17 @@ func Run(BotToken string, OpenAiKey string) {
                 msg2 := &discordgo.MessageSend{
                     Content: prompt + ":",
                 }
-                _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
-                _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
-                if err != nil { fmt.Println("Within func"); return }
+                errmsg := &discordgo.MessageSend{
+                    Content: "Prompt Was Rejected",
+                }
+                if (erro == false) {
+                    _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
+                    _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
+                    if err != nil { fmt.Println("Within func"); return }
+                }
+                if (erro) {
+                    _, _ = s.ChannelMessageSendComplex(i.ChannelID, errmsg)
+                }
             }
         }
     })
