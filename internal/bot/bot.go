@@ -35,12 +35,12 @@ func Run(BotToken string, OpenAiKey string) {
         },
         {
             Name: "generate-text",
-            Description: "Generates an image from a prompt",
+            Description: "Generates text from a prompt",
             Options: []*discordgo.ApplicationCommandOption {
                 {
                     Type: discordgo.ApplicationCommandOptionString,
                     Name: "prompt",
-                    Description: "prompt for the image",
+                    Description: "prompt for the text",
                     Required: true,
                 },
             },
