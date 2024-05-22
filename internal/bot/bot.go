@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"wjourney/internal/imagegeneration"
+	"wjourney/internal/textgeneration"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -23,6 +24,18 @@ func Run(BotToken string, OpenAiKey string) {
         {
             Name: "generate-image",
             Description: "Generates an ai image from a prompt",
+            Options: []*discordgo.ApplicationCommandOption {
+                {
+                    Type: discordgo.ApplicationCommandOptionString,
+                    Name: "prompt",
+                    Description: "prompt for the image",
+                    Required: true,
+                },
+            },
+        },
+        {
+            Name: "generate-text",
+            Description: "Generates an image from a prompt",
             Options: []*discordgo.ApplicationCommandOption {
                 {
                     Type: discordgo.ApplicationCommandOptionString,
@@ -78,6 +91,57 @@ func Run(BotToken string, OpenAiKey string) {
 
                 msg := &discordgo.MessageSend{
                     Content: url,
+                }
+
+                msg2 := &discordgo.MessageSend{
+                    Content: prompt + ":",
+                }
+                errmsg := &discordgo.MessageSend{
+                    Content: "Prompt Was Rejected",
+                }
+                if (erro == false) {
+                    _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
+                    _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
+                    if err != nil { fmt.Println("Within func"); return }
+                }
+                if (erro) {
+                    _, _ = s.ChannelMessageSendComplex(i.ChannelID, errmsg)
+                }
+            case "generate-text":
+                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func"); return; }
+
+                err = s.InteractionRespond(
+                    i.Interaction,
+                    &discordgo.InteractionResponse {
+                        Type: discordgo.InteractionResponseChannelMessageWithSource,
+                        Data: &discordgo.InteractionResponseData {
+                            Content: "Wait please!",
+                        },
+                    },
+                )
+                if err != nil { fmt.Println("Bot 3"); log.Fatal(err) }
+
+                var prompt string
+                for _, v := range i.Interaction.ApplicationCommandData().Options {
+                    switch v.Name {
+                    case "prompt":
+                        prompt = v.StringValue()
+                    }
+                }
+                if prompt == "" { fmt.Println("Within func"); return; }
+
+                timeOutMsg := &discordgo.MessageSend{
+                    Content: "Request timed out",
+                }
+                resp, err := textgeneration.GetGeneratedText(prompt, OpenAiKey)
+                if err != nil {
+                    _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
+                    fmt.Println("Within func"); return;
+                }
+                if resp == "rejected" { erro = true; }
+
+                msg := &discordgo.MessageSend{
+                    Content: resp,
                 }
 
                 msg2 := &discordgo.MessageSend{

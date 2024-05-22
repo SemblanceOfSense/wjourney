@@ -9,24 +9,24 @@ import (
 	"time"
 )
 
-type OpenAiRequest struct {
+type openAiRequest struct {
     Model string `json:"model"`
     Prompt string `json:"prompt"`
     NumberOfImages int `json:"n"` // Note: with dall-e-3 only one image can be generated at a time
     Size string `json:"size"`
 }
 
-type Response struct {
+type response struct {
     Created int `json:"created"`
-    Data []Data `json:"data"`
+    Data []data `json:"data"`
 }
 
-type Data struct {
+type data struct {
     Url string `json:"url"`
 }
 
 func GetImageUrl(prompt string, openaikey string) (string, error) {
-    requestBody := OpenAiRequest{
+    requestBody := openAiRequest{
         Model: "dall-e-3",
         Prompt: prompt,
         NumberOfImages: 1,
@@ -47,7 +47,7 @@ func GetImageUrl(prompt string, openaikey string) (string, error) {
     if err != nil { fmt.Println("Image"); return "", err }
     defer res.Body.Close()
 
-    bodyStruct := &Response{}
+    bodyStruct := &response{}
     body, err := io.ReadAll(res.Body)
     if err != nil { fmt.Println("Image"); return "", err }
     err = json.Unmarshal(body, bodyStruct)
