@@ -57,7 +57,7 @@ func Run(BotToken string, OpenAiKey string) {
             data := i.ApplicationCommandData()
             switch data.Name {
             case "generate-image":
-                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func"); return; }
+                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func 1"); return; }
 
                 err = s.InteractionRespond(
                     i.Interaction,
@@ -77,7 +77,7 @@ func Run(BotToken string, OpenAiKey string) {
                         prompt = v.StringValue()
                     }
                 }
-                if prompt == "" { fmt.Println("Within func"); return; }
+                if prompt == "" { fmt.Println("Within func 2"); return; }
 
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
@@ -85,7 +85,7 @@ func Run(BotToken string, OpenAiKey string) {
                 url, err := imagegeneration.GetImageUrl(prompt, OpenAiKey)
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
-                    fmt.Println("Within func"); return;
+                    fmt.Println("Within func 3"); return;
                 }
                 if url == "rejected" { erro = true; }
 
@@ -101,14 +101,15 @@ func Run(BotToken string, OpenAiKey string) {
                 }
                 if (erro == false) {
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
+                    if err != nil { fmt.Println("Prompt message failed"); fmt.Println(err); return }
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
-                    if err != nil { fmt.Println("Within func"); return }
+                    if err != nil { fmt.Println("Response message failed"); return }
                 }
                 if (erro) {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, errmsg)
                 }
             case "generate-text":
-                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func"); return; }
+                if i.Interaction.Member.User.ID == s.State.User.ID { fmt.Println("Within func 1"); return; }
 
                 err = s.InteractionRespond(
                     i.Interaction,
@@ -128,7 +129,7 @@ func Run(BotToken string, OpenAiKey string) {
                         prompt = v.StringValue()
                     }
                 }
-                if prompt == "" { fmt.Println("Within func"); return; }
+                if prompt == "" { fmt.Println("Within func 2"); return; }
 
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
@@ -136,7 +137,7 @@ func Run(BotToken string, OpenAiKey string) {
                 resp, err := textgeneration.GetGeneratedText(prompt, OpenAiKey)
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
-                    fmt.Println("Within func"); return;
+                    fmt.Println("Within func 3"); return;
                 }
                 if resp == "rejected" { erro = true; }
 
@@ -152,8 +153,9 @@ func Run(BotToken string, OpenAiKey string) {
                 }
                 if (erro == false) {
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
+                    if err != nil { fmt.Println("Failed prompt message") }
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
-                    if err != nil { fmt.Println("Within func"); return }
+                    if err != nil { fmt.Println("Failed response message"); return }
                 }
                 if (erro) {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, errmsg)
