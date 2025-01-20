@@ -69,5 +69,9 @@ func GetGeneratedText(prompt string, aikey string) (string, error) {
     err = json.Unmarshal(body, bodyStruct)
     if err != nil { return "", err }
 
+    if len(bodyStruct.Choices) == 0 {
+        return "Prompt was rejected", nil
+    }
+
     return bodyStruct.Choices[0].Message.Content, nil
 }
