@@ -5,15 +5,15 @@ import (
 	"wjourney/internal/bot"
 )
 
-var OpenaiKey, BotToken string
+var AiKey, BotToken string
 
 func init() {
-    flag.StringVar(&OpenaiKey, "openaikey", "", "openai api key")
+    flag.StringVar(&AiKey, "aikey", "", "LLM api key")
     flag.StringVar(&BotToken, "bottoken", "", "discord bot token")
 
     flag.Parse()
 }
 
 func main() {
-    bot.Run(BotToken, OpenaiKey)
+    bot.Run(BotToken, AiKey)
 }

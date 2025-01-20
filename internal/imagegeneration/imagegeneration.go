@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-type openAiRequest struct {
+type aiRequest struct {
     Model string `json:"model"`
     Prompt string `json:"prompt"`
-    NumberOfImages int `json:"n"` // Note: with dall-e-3 only one image can be generated at a time
+    NumberOfImages int `json:"n"`
     Size string `json:"size"`
 }
 
@@ -25,8 +25,8 @@ type data struct {
     Url string `json:"url"`
 }
 
-func GetImageUrl(prompt string, openaikey string) (string, error) {
-    requestBody := openAiRequest{
+func GetImageUrl(prompt string, aikey string) (string, error) {
+    requestBody := aiRequest{
         Model: "dall-e-3",
         Prompt: prompt,
         NumberOfImages: 1,
@@ -40,7 +40,7 @@ func GetImageUrl(prompt string, openaikey string) (string, error) {
     req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
     if err != nil { fmt.Println("Image"); return "", err }
     req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Authorization", "Bearer " + openaikey)
+    req.Header.Set("Authorization", "Bearer " + aikey)
 
     client := http.Client{Timeout: 20 * time.Second}
     res, err := client.Do(req)

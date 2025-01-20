@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type openAiRequest struct {
+type aiRequest struct {
     Model string `json:"model"`
     Messages []message `json:"messages"`
 }
@@ -41,19 +41,19 @@ type choice struct {
     Finish_reason string
 }
 
-func GetGeneratedText(prompt string, openaikey string) (string, error) {
+func GetGeneratedText(prompt string, aikey string) (string, error) {
     requestPrompt := message{Role: "user", Content: prompt}
-    requestBody := openAiRequest{Model: "gpt-3.5-turbo", Messages: []message{requestPrompt}}
+    requestBody := aiRequest{Model: "grok-2-vision-1212", Messages: []message{requestPrompt}}
 
     jsonData, err := json.Marshal(requestBody)
     if err != nil {
         return "", err
     }
 
-    url := "https://api.openai.com/v1/chat/completions"
+    url := "https://api.x.ai/v1/chat/completions"
     req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
     req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Authorization", "Bearer " + openaikey)
+    req.Header.Set("Authorization", "Bearer " + aikey)
     if err != nil {
         return "", err
     }
