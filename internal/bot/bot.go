@@ -155,7 +155,7 @@ func Run(BotToken string, OpenAiKey string) {
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg2)
                     if err != nil { fmt.Println("Failed prompt message") }
                     _, err = s.ChannelMessageSendComplex(i.ChannelID, msg)
-                    if err != nil { fmt.Println("Failed response message"); return }
+                    if err != nil { fmt.Println("Failed response message"); erro = true; return }
                 }
                 if (erro) {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, errmsg)
