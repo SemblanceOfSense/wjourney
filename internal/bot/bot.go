@@ -16,7 +16,7 @@ var (
     guildID = ""
 )
 
-func Run(BotToken string, OpenAiKey string) {
+func Run(BotToken string, OpenAiKey string, GrokKey string) {
     discord, err := discordgo.New(("Bot " + BotToken))
     if err != nil { fmt.Println("Bot 1"); log.Fatal(err) }
 
@@ -134,7 +134,7 @@ func Run(BotToken string, OpenAiKey string) {
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
                 }
-                resp, err := textgeneration.GetGeneratedText(prompt, OpenAiKey)
+                resp, err := textgeneration.GetGeneratedText(prompt, GrokKey)
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
                     fmt.Println("Within func 3"); return;
