@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"wjourney/internal/imagegeneration"
 	"wjourney/internal/textgeneration"
 
@@ -134,7 +135,10 @@ func Run(BotToken string, OpenAiKey string, GrokKey string) {
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
                 }
-                resp, err := textgeneration.GetGeneratedText(prompt, GrokKey)
+                var resp string
+                if (!(strings.Contains(prompt, "foot") || strings.Contains(prompt, "feet"))) {
+                    resp, err = textgeneration.GetGeneratedText(prompt, GrokKey)
+                }
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
                     fmt.Println("Within func 3"); return;
