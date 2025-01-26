@@ -135,9 +135,9 @@ func Run(BotToken string, OpenAiKey string, GrokKey string) {
                 timeOutMsg := &discordgo.MessageSend{
                     Content: "Request timed out",
                 }
-                var resp string
-                if (!(strings.Contains(prompt, "foot") || strings.Contains(prompt, "feet"))) {
-                    resp, err = textgeneration.GetGeneratedText(prompt, GrokKey)
+                resp, err := textgeneration.GetGeneratedText(prompt, GrokKey)
+                if (strings.Contains(prompt, "foot") || strings.Contains(prompt, "feet")) {
+                    resp = "rejected"
                 }
                 if err != nil {
                     _, _ = s.ChannelMessageSendComplex(i.ChannelID, timeOutMsg)
